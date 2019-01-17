@@ -11,12 +11,11 @@ import {
   View } from 'react-native';
   import { createStore, applyMiddleWare } from "redux";
 import { connect, Provider } from "react-redux";
-import thunkMiddleWare from 'redux-thunk';
 import reducer from "./reducer";
 import PurchaseSummary from "./screens/PurchaseSummary";
 
 
-const store = createStore(reducer, applyMiddleWare(thunkMiddleWare));
+const store = createStore(reducer);
 
 
 /* NOTES:

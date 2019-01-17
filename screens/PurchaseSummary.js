@@ -11,7 +11,7 @@ import {
   View } from 'react-native';
 import { connect } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
-import { applyDiscount } from "../actions.js";
+import { applyPickupDiscount, applyPromo, removePickupDiscount } from "../actions.js";
 import styles from "./styles";
 import InfoButton from "../components/infoButton.js";
 import Header from "../components/header.js";
@@ -27,20 +27,19 @@ class PurchaseSummary extends React.Component {
       details: false,
       pickup: false,
       promo: false,
+      promoCode: "",
       promoApplied: false,
       shipping: true,
     }
   }
 
   _deliveryHandler(type) {
-    this.setState({
-      pickup: !this.state.pickup,
-      shipping: !this.state.shipping,
-    });
-    if (type === "pickup") {
-      this.props.applyDiscount(this.props.pickupDiscount);
-    } else if (type === "shipping") {
-      this.props.removeDiscount(this.props.pickupDiscount);
+    if (type === "pickup" && !this.state.pickup) {
+      this.setState({pickup: true, shipping: false});
+      this.props.applyPickupDiscount(this.props.price, this.props.pickupDiscount);
+    } else if (type === "shipping" && !this.state.shipping) {
+      this.props.removePickupDiscount(this.props.price, this.props.pickupDiscount);
+      this.setState({pickup: false, shipping: true});
     }
   }
 
@@ -48,6 +47,16 @@ class PurchaseSummary extends React.Component {
     this.setState({
       details: !this.state.details,
     })
+  }
+
+  _promoApplyer() {
+    if (this.state.promoCode === "DISCOUNT") {
+      this.props.applyPromo(this.props.price);
+      // dispatch action that reduces price by 10%
+    } else {
+      alert("Promo code is invalid");
+      this.setState({promoCode: ""});
+    }
   }
 
   _promoExpander() {
@@ -107,8 +116,8 @@ class PurchaseSummary extends React.Component {
 
                 {/*Main Payment Info*/}
                 <LineItem text1={"Subtotal"} text2={"$115.00"}/>
-                <LineItem text1={"Subtotal"} text2={"Free"}/>
-                <LineItem text1={"Subtotal"} text2={"$10.35"}/>
+                <LineItem text1={"Shipping"} text2={"Free"}/>
+                <LineItem text1={"Taxes"} text2={"$10.35"}/>
                 <LineItem text1={"Based on 94085"}/>
                 <Divider />
 
@@ -156,9 +165,11 @@ class PurchaseSummary extends React.Component {
                         <Text style={{textAlign: "left"}}>Promo code</Text>
                         <TextInput
                           style={styles.inputPromo}
+                          onChangeText={(text) => this.setState({promoCode: text})}
+                          value={this.state.promoCode}
                         />
                       </View>
-                      <TouchableOpacity style={styles.applyButton}>
+                      <TouchableOpacity style={styles.applyButton} onPress={() => this._promoApplyer()}>
                         <Text> Apply </Text>
                       </TouchableOpacity>
                     </View>
@@ -179,13 +190,16 @@ class PurchaseSummary extends React.Component {
 const mapDispatchToProps = dispatch => {
   console.log("dispatch: ", dispatch);
   return {
-    applyDiscount: (discount) => dispatch(applyDiscount(discount)),
+    applyPromo: (base) => dispatch(applyPromo(base)),
+    applyPickupDiscount: (base, price) => dispatch(applyPickupDiscount(base, price)),
+    removePickupDiscount: (base, price) => dispatch(removePickupDiscount(base, price)),
   };
 };
 
 const mapStateToProps = state => {
   console.log("state: ", state);
   return {
+    basePrice: state.basePrice,
     pickupDiscount: state.pickupDiscount,
     price: state.price
   };
