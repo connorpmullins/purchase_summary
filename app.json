@@ -1,3 +1,6 @@
+
+// Issue with splash resize mode - pic refuses to be contained to original size.
+// Bug w/ expo?
 {
   "expo": {
     "name": "Walmart Purchase Summary",
