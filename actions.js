@@ -8,6 +8,8 @@ export const APPLY_PROMO = "APPLY_PROMO";
 //     price: price,
 //   };
 // };
+
+// This would normally go in a helper function / util function file or folder
 function roundToTwo(num) {    
   return +(Math.round(num + "e+2")  + "e-2");
 }

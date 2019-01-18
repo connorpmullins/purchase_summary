@@ -202,7 +202,7 @@ const mapStateToProps = state => {
     basePrice: state.basePrice,
     pickupDiscount: state.pickupDiscount,
     price: state.price,
-    promoApplied: promoApplied,
+    promoApplied: state.promoApplied,
   };
 };
 
