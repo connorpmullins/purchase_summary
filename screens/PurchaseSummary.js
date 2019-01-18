@@ -50,7 +50,7 @@ class PurchaseSummary extends React.Component {
   }
 
   _promoApplyer() {
-    if (this.state.promoCode === "DISCOUNT") {
+    if (this.state.promoCode === "DISCOUNT" && !this.props.promoApplied) {
       this.props.applyPromo(this.props.price);
       // dispatch action that reduces price by 10%
     } else {
@@ -201,7 +201,8 @@ const mapStateToProps = state => {
   return {
     basePrice: state.basePrice,
     pickupDiscount: state.pickupDiscount,
-    price: state.price
+    price: state.price,
+    promoApplied: promoApplied,
   };
 };
 
