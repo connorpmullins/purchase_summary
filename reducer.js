@@ -5,6 +5,7 @@ const promoState = {
   basePrice: 125.35,
   pickupDiscount: 4.30,
   price: 125.35,
+  promoApplied: false,
 };
 
 const reducer = (state = promoState, action) => {
@@ -16,7 +17,7 @@ const reducer = (state = promoState, action) => {
     console.log("Price changed to this: ", action.newPrice);
     return {...state, price: action.newPrice};
   case APPLY_PROMO:
-    return {...state, price: action.newPrice};
+    return {...state, price: action.newPrice, promoApplied: true};
   default:
     // do nothing
   }
